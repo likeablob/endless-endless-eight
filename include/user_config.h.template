@@ -1,0 +1,13 @@
+#pragma once
+
+#define USE_MQTT_REPORTER
+
+#ifdef USE_MQTT_REPORTER
+#define WIFI_SSID "yourSSID"
+#define WIFI_PASSWORD "yourPassword"
+
+#define MQTT_HOST IPAddress(192, 168, 1, 1)
+#define MQTT_PORT 1883
+
+#define MQTT_TOPIC_PREFIX "home/eee/"
+#endif
