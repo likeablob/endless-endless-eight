@@ -46,7 +46,7 @@ $ cd endless-endless-eight
 $ cp include/user_config.g.template cp include/user_config.h
 $ code include/user_config.h
 
-$ pio run && pio run  
+$ pio run || pio run # The very 1st run may fail due to ulptool-pio
 $ pio run -t upload
 ```
 
