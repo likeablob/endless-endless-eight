@@ -62,6 +62,8 @@ void setup() {
     Serial.begin(921600);
     Serial.println("Started");
 
+    MqttReporter::begin();
+
     esp_sleep_wakeup_cause_t cause = esp_sleep_get_wakeup_cause();
     if(cause != ESP_SLEEP_WAKEUP_ULP) {
         Serial.println("Not ULP wakeup, initializing ULP");
@@ -100,8 +102,6 @@ void setup() {
     if(!EEE.begin()) {
         ESP.restart();
     }
-
-    MqttReporter::begin();
 }
 
 void loop() {
