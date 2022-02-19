@@ -21,6 +21,10 @@
 extern const uint8_t ulp_main_bin_start[] asm("_binary_ulp_main_bin_start");
 extern const uint8_t ulp_main_bin_end[] asm("_binary_ulp_main_bin_end");
 
+// Nagato
+RTC_DATA_ATTR uint32_t RTC_EEE_fileInd = 0;
+RTC_DATA_ATTR uint32_t RTC_EEE_frameInd = 0;
+
 Chrono powerManagerTask;
 
 static void init_ulp_adc() {
@@ -52,10 +56,12 @@ void report(bool isRunning) {
     uint16_t batVraw = (ulp_batV & 0xFFFF);
     uint16_t batV = (float)batVraw * 1.807f; // 1/4095 * 3700 * 2
 
-    mqtt_data_map_t dataMap{{"millis", String(millis())},
-                            {"batV", String(batV)},
-                            {"batVraw", String(batVraw)},
-                            {"isRunning", String((uint8_t)isRunning)}};
+    mqtt_data_map_t dataMap{
+        {"millis", String(millis())},
+        {"batV", String(batV)},
+        {"batVraw", String(batVraw)},
+        {"isRunning", String((uint8_t)isRunning)},
+    };
 
     MqttReporter::report(dataMap);
 #endif
@@ -96,11 +102,11 @@ void setup() {
             esp_deep_sleep_start();
         }
 
-        // Restore variables from RTC SLOW RAM
-        EEE.fileInd = ulp_fileInd & 0xFFFF;
-        EEE.frameInd =
-            (ulp_frameIndH & 0xFFFF) << 16 | (ulp_frameIndL & 0xFFFF);
-        Serial.printf("fileInd: %u, frameInd: %u", EEE.fileInd, EEE.frameInd);
+        // Restore variables from RTC SLOW MEM
+        EEE.fileInd = RTC_EEE_fileInd;
+        EEE.frameInd = RTC_EEE_frameInd;
+        Serial.printf("Restored: fileInd: %u, frameInd: %u\n", EEE.fileInd,
+                      EEE.frameInd);
     }
 
     PM::enableBusPower();
@@ -122,8 +128,10 @@ void loop() {
         uint32_t batV = (ulp_batV & 0xFFFF);
         if(batV <= PM_VBAT_TH_SLEEP) {
             Serial.printf("Entering deep sleep. batV: %u\n", batV);
-            ulp_frameIndH = EEE.frameInd >> 16;
-            ulp_frameIndL = EEE.frameInd & 0xFFFF;
+
+            // Save variables into RTC SLOW MEM
+            RTC_EEE_fileInd = EEE.fileInd;
+            RTC_EEE_frameInd = EEE.frameInd;
 
             PM::disableBusPower();
             esp_deep_sleep_start();

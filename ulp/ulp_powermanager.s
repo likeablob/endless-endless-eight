@@ -8,15 +8,6 @@ status:
     .global batV
 batV:
 .long 0x0
-    .global fileInd
-fileInd:
-.long 0x0
-    .global frameIndH
-frameIndH:
-.long 0x0
-    .global frameIndL
-frameIndL:
-.long 0x0
     .global entry
 .text
 entry:

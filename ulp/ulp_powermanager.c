@@ -10,11 +10,6 @@ unsigned _counterPeriodicTask = 1780;
 unsigned status = 0;
 unsigned batV = 0;
 
-// Nagato
-unsigned fileInd = 0;
-unsigned frameIndH = 0;
-unsigned frameIndL = 0;
-
 void entry() {
     _counterPeriodicTask++;
     if(_counterPeriodicTask >= COUNTER_PERIODIC_TASK) {
