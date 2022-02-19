@@ -34,6 +34,7 @@ void MqttReporter::begin() {
     xSemaphoreTake(xMutex, 0);
 
     pinMode(BUILTIN_LED, OUTPUT);
+    digitalWrite(BUILTIN_LED, HIGH); // OFF
 }
 
 void MqttReporter::report(mqtt_data_map_t &dataMap) {
