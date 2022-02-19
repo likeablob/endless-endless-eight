@@ -23,6 +23,12 @@ extern const uint8_t ulp_main_bin_end[] asm("_binary_ulp_main_bin_end");
 
 Chrono powerManagerTask;
 
+static void init_ulp_adc() {
+    adc1_config_channel_atten(ADC1_CHANNEL_6, ADC_ATTEN_DB_11);
+    adc1_config_width(ADC_WIDTH_BIT_12);
+    adc1_ulp_enable();
+}
+
 static void init_run_ulp(uint32_t usec) {
     ulp_set_wakeup_period(0, usec);
     esp_deep_sleep_disable_rom_logging(); // suppress boot messages
@@ -32,9 +38,7 @@ static void init_run_ulp(uint32_t usec) {
         (ulp_main_bin_end - ulp_main_bin_start) / sizeof(uint32_t));
     err = ulp_run((&ulp_entry - RTC_SLOW_MEM) / sizeof(uint32_t));
 
-    adc1_config_channel_atten(ADC1_CHANNEL_6, ADC_ATTEN_DB_11);
-    adc1_config_width(ADC_WIDTH_BIT_12);
-    adc1_ulp_enable();
+    init_ulp_adc();
 
     if(err) {
         Serial.println("Error Starting ULP Coprocessor");
@@ -72,6 +76,8 @@ void setup() {
     } else {
         Serial.println("ULP wakeup");
         esp_sleep_enable_ulp_wakeup();
+        init_ulp_adc(); // FIXME: This keeps ESP32 stably wake-able even after
+                        // esp_wifi_stop() is called.
 
         // If ULP requested to run the periodic task, run it and back to sleep
         // immediately.

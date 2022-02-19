@@ -95,7 +95,8 @@ void MqttReporter::report(mqtt_data_map_t &dataMap) {
     }
     Serial.printf("tDisconnect: %u\n", millis() - tDisconnect);
 
-    // Disconnect from the AP
+    // Disconnect from the AP and stop WiFi stack
+    // by wifioff=true', esp_wifi_stop() will be called internally
     WiFi.disconnect(true);
 
     digitalWrite(BUILTIN_LED, HIGH);
