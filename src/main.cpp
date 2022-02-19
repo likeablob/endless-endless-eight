@@ -46,7 +46,7 @@ static void init_run_ulp(uint32_t usec) {
 void report(bool isRunning) {
 #ifdef USE_MQTT_REPORTER
     uint16_t batVraw = (ulp_batV & 0xFFFF);
-    uint16_t batV = (float)batVraw * 1.76f;
+    uint16_t batV = (float)batVraw * 1.807f; // 1/4095 * 3700 * 2
 
     mqtt_data_map_t dataMap{{"millis", String(millis())},
                             {"batV", String(batV)},

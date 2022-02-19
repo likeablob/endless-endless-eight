@@ -44,7 +44,7 @@ L.2:
 	st r0,r1,0
 	move r2,batV
 	ld r2,r2,0
-	move r1,2251
+	move r1,2158
 	sub r2,r2,r1 #{ if r2 < r1 goto L.4
 	add r2,r2,r1
 	jump L.4, ov #}
@@ -57,7 +57,7 @@ L.2:
 L.4:
 	move r2,batV
 	ld r2,r2,0
-	move r1,2020
+	move r1,1937
 	sub r1,r1,r2 #{ if r2 > r1 goto L.6
 	add r1,r1,r2
 	jump L.6, ov #}
