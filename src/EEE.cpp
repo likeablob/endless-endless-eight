@@ -107,6 +107,7 @@ void EEE_::renderFrame() {
         shouldLoadFile =
             FileLoadReason::NEXT_FILE_REQUESTED; // Load the next file in the
                                                  // next loop
+        loopCount++;
     } else if(err != AVI_PARSER_OK) {
         Serial.printf("An error returned by readIndex(): 0x%x\r\n", err);
         _requestFirstVidFile();

@@ -24,9 +24,14 @@ bool isWakeVoltageSatisfied(uint32_t status) {
     return status & PM_STATUS_WAKE_VOLTAGE_SATISFIED;
 }
 
+void clearWakeVoltageSatisfied(uint32_t &status) {
+    status &= ~PM_STATUS_WAKE_VOLTAGE_SATISFIED;
+};
+
 bool isEmergencyTaskRequested(uint32_t status) {
     return status & PM_STATUS_EMERGENCY_TASK_REQ;
 }
+
 void clearEmergencyTaskRequest(uint32_t &status) {
     status &= ~PM_STATUS_EMERGENCY_TASK_REQ;
 };

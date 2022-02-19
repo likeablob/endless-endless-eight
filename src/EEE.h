@@ -42,6 +42,7 @@ class EEE_ {
   public:
     size_t fileInd = 0;
     size_t frameInd = 0;
+    size_t loopCount = 0; // Nagato
     FileLoadReason shouldLoadFile = FileLoadReason::LOAD_AFTER_BOOT;
 
     static EEE_ &getInstance(); // Accessor for singleton instance
