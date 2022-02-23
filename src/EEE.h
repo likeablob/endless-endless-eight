@@ -51,8 +51,8 @@ class EEE_ {
     EEE_ &operator=(const EEE_ &) = delete;
 
     bool begin();
-    void handle();
-    void renderFrame();
+    bool handle();
+    bool renderFrame();
 };
 
 extern EEE_ &EEE;

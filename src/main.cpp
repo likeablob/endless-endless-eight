@@ -53,6 +53,17 @@ static void init_run_ulp(uint32_t usec) {
     esp_sleep_enable_ulp_wakeup();
 }
 
+void start_deep_sleep() {
+    // Save variables into RTC SLOW MEM
+    RTC_EEE_fileInd = EEE.fileInd;
+    RTC_EEE_frameInd = EEE.frameInd;
+    RTC_EEE_loopCount = EEE.loopCount;
+
+    PM::disableBusPower();
+    PM::clearWakeVoltageSatisfied(ulp_status);
+    esp_deep_sleep_start();
+}
+
 void report(bool isRunning) {
 #ifdef USE_MQTT_REPORTER
     uint16_t batVraw = (ulp_batV & 0xFFFF);
@@ -129,7 +140,8 @@ void setup() {
     PM::enableBusPower();
 
     if(!EEE.begin()) {
-        ESP.restart();
+        Serial.println("EEE.begin() returned an error. Entering deep sleep.");
+        start_deep_sleep();
     }
 }
 
@@ -145,18 +157,13 @@ void loop() {
         uint32_t batV = (ulp_batV & 0xFFFF);
         if(batV <= PM_VBAT_TH_SLEEP) {
             Serial.printf("Entering deep sleep. batV: %u\n", batV);
-
-            // Save variables into RTC SLOW MEM
-            RTC_EEE_fileInd = EEE.fileInd;
-            RTC_EEE_frameInd = EEE.frameInd;
-            RTC_EEE_loopCount = EEE.loopCount;
-
-            PM::disableBusPower();
-            PM::clearWakeVoltageSatisfied(ulp_status);
-            esp_deep_sleep_start();
+            start_deep_sleep();
         }
     }
 
     // Render a video frame
-    EEE.handle();
+    if(!EEE.handle()) {
+        Serial.println("EEE.handle() returned an error. Entering deep sleep.");
+        start_deep_sleep();
+    }
 }

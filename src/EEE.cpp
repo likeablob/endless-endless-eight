@@ -63,7 +63,7 @@ bool EEE_::begin() {
     return true;
 }
 
-void EEE_::handle() {
+bool EEE_::handle() {
     // Load the next vid file if requested.
     if(shouldLoadFile != FileLoadReason::CLEARED) {
         // Preserve preloaded frameInd on LOAD_AFTER_BOOT
@@ -81,7 +81,7 @@ void EEE_::handle() {
             fileInd = 0;
             frameInd = 0;
             // Keep shouldLoadFile to reload the file in the next loop.
-            return;
+            return false;
         }
         Serial.printf("tInit: %lu ms\r\n", millis() - tInit);
         shouldLoadFile = FileLoadReason::CLEARED;
@@ -89,11 +89,13 @@ void EEE_::handle() {
 
     if(renderTask.hasPassed(EE_MSEC_PER_FRAME)) {
         renderTask.restart();
-        renderFrame();
+        return renderFrame();
     }
+
+    return true;
 }
 
-void EEE_::renderFrame() {
+bool EEE_::renderFrame() {
     uint32_t tLoad = millis();
 
     // Load index data
@@ -111,7 +113,7 @@ void EEE_::renderFrame() {
     } else if(err != AVI_PARSER_OK) {
         Serial.printf("An error returned by readIndex(): 0x%x\r\n", err);
         _requestFirstVidFile();
-        return;
+        return false;
     }
 
     // Load frame data
@@ -121,7 +123,7 @@ void EEE_::renderFrame() {
         Serial.printf("An error returned by readFrame(): 0x%x\r\n", err);
         free(imgData);
         _requestFirstVidFile();
-        return;
+        return false;
     }
     tLoad = millis() - tLoad;
 
@@ -139,4 +141,6 @@ void EEE_::renderFrame() {
     }
 
     frameInd++;
+
+    return true;
 }
