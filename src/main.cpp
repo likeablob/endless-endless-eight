@@ -102,7 +102,7 @@ void setup() {
             "Restored from Stash: fileInd: %u, frameInd: %u, loopCount: %u\n",
             EEE.fileInd, EEE.frameInd, EEE.loopCount);
     } else {
-        Serial.println("ULP wakeup");
+        Serial.printf("ULP wakeup: batV: %u\n", (ulp_batV & 0xFFFF));
         esp_sleep_enable_ulp_wakeup();
         init_ulp_adc(); // FIXME: This keeps ESP32 stably wake-able even after
                         // esp_wifi_stop() is called.
