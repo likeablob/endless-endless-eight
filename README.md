@@ -17,6 +17,7 @@ A self-sustained AVI player to replay the summer days.
 ## BOM
 
 **WIP**
+
 - ESP32 WeMos LOLIN32 Lite
 - ST7735 80x160 LCD module
 - microSD card (>= 2 GB)
@@ -32,6 +33,7 @@ $ seq 12 19 | xargs -L 1 -P1 -I% bash -c 'ffmpeg -i ee_%.mp4 -r 24 -vf scale=160
 ```
 
 See [sdcard/](./sdcard/) for a set of sample vid files. These are converted from [BigBuckBunny.mp4](http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4).
+
 ```sh
 # The sample vid files were from
 $ seq 12 19 | xargs -L 1 -P1 -I% bash -c 'ffmpeg -ss $(((% - 12)*2)) -to $(((% - 12 + 1) * 2)) -i BigBuckBunny.mp4 -r 24 -vf scale=160:-1,crop=160:80 -vcodec mjpeg -q:v 5 -an ee_%.avi -y'
@@ -50,11 +52,16 @@ $ pio run || pio run # The very 1st run may fail due to ulptool-pio
 $ pio run -t upload
 ```
 
+## Print enclosure
+
+See [./enclosure](./enclosure).
+
 ## How it works
 
 ### State transitions
 
 Centering on the deep sleep mode, this application has several wake-up states as depicted in the following diagram.
+
 - The application switches back-and-forth between the nominal mode and deep sleep depending on the battery voltage. (See [Power management strategy](#power-management-strategy) for details.)
 - Also, under the certain condition, it wakes in;
   - Emergency mode to prepare for a complete power loss (See [State persistence](#state-persistence))
@@ -129,6 +136,7 @@ flowchart TB
 The play state such as a file playing, its position and loop count etc. are kept over deep sleep or even complete power outage, thanks to ~~Nagato~~ [RTC SLOW MEM](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/system/sleep_modes.html#overview) and [Non-Volatile Storage](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/storage/nvs_flash.html). The former is volatile but survives deep sleep, and the latter is nothing but a reserved region in flash.
 
 In short there are two pathways for each storage.
+
 - A. Save to `RTC_SLOW_MEM` before entering deep sleep. Restore from `RTC_SLOW_MEM` after waking up from deep sleep.
 - B. Save to `NVS` at very-low battery voltage. Restore from `NVS` on boot.
 
@@ -170,7 +178,7 @@ flowchart
 
 MIT
 
-
 ## Dependencies
+
 This projects is here thanks to a lot of superb OSS libraries.
 See [platformio.ini](./platformio.ini) for details. Thank you to all the devs.
