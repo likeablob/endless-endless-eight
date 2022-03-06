@@ -1,0 +1,3 @@
+[submodule "enclosure/scad-utils"]
+	path = enclosure/scad-utils
+	url = https://github.com/OskarLinde/scad-utils
