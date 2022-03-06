@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include <stdint.h>
 
-#define PIN_BUS_POWER_SW 32
+#define PIN_BUS_POWER_SW 26
 
 namespace PM {
 
