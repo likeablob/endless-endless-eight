@@ -19,8 +19,13 @@ void entry() {
         return;
     }
 
+    // Measure batV and apply LPF (k=0.5)
+    if(batV == 0) {
+        batV = adc(0, ADC_CHANNEL + 1); // init
+    }
+    batV = (adc(0, ADC_CHANNEL + 1) >> 1) + (batV >> 1);
+
     // Wake if batV is above the threshold
-    batV = adc(0, ADC_CHANNEL + 1);
     if(batV >= PM_VBAT_TH_WAKE) {
         status |= PM_STATUS_WAKE_VOLTAGE_SATISFIED;
         wake();
