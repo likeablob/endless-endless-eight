@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "wemos_lolin32_lite")(type "KiCad")(uri "${KIPRJMOD}/wemos_lolin32_lite.kicad_sym")(options "")(descr ""))
+)
